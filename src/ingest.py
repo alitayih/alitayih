@@ -4,6 +4,8 @@ import os
 from datetime import datetime, timezone
 
 from .db import record_ingestion_run, upsert_meta, upsert_values
+
+from .db import upsert_meta, upsert_values
 from .sources_conflict import load_demo_data
 from .sources_food import fetch_food_source
 from .sources_worldbank import fetch_world_bank
@@ -19,6 +21,7 @@ def ingest_country(conn, country_iso3: str, demo_mode: bool = False, ttl_hours: 
         mode = "demo"
         record_ingestion_run(conn, country_iso3, mode, datetime.now(timezone.utc).isoformat())
         return mode
+        return "demo"
 
     seed_demo = [
         v
@@ -42,3 +45,7 @@ def ingest_country(conn, country_iso3: str, demo_mode: bool = False, ttl_hours: 
 
     record_ingestion_run(conn, country_iso3, mode, datetime.now(timezone.utc).isoformat())
     return mode
+        return "live"
+    except Exception:
+        upsert_values(conn, [v for v in demo_values if v["country_iso3"] == country_iso3])
+        return "fallback_demo"

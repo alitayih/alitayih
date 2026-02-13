@@ -10,10 +10,12 @@ import streamlit as st
 
 from src.alerts import add_alert_rule, evaluate_alerts, list_alert_events
 from src.db import get_connection, get_db_path, get_latest_ingestion_run, init_db, query_country_values
+from src.db import get_connection, init_db, query_country_values
 from src.ingest import ingest_country
 from src.scenarios import record_scenario, simulate
 from src.scoring import compute_scores
 from src.utils import country_display_name, deterministic_summary, ordered_countries
+from src.utils import deterministic_summary
 
 st.set_page_config(page_title="Food Security Early Warning", layout="wide")
 
@@ -111,6 +113,7 @@ country = st.sidebar.selectbox(
     index=0,
     format_func=lambda iso: country_display_name(iso, lang),
 )
+country = st.sidebar.selectbox(T["country"], ["KEN", "SDN", "YEM"])
 demo_mode = st.sidebar.toggle(T["demo"], value=os.getenv("DEMO_MODE", "0") == "1")
 ttl_hours = int(st.sidebar.slider(T["ttl"], min_value=1, max_value=168, value=24, step=1))
 
@@ -159,6 +162,8 @@ with st.expander(T["health"], expanded=True):
         st.write(f"{T['last_ingest']}: `{last_run['ingested_at']}` ({last_run['mode']})")
     else:
         st.write(f"{T['last_ingest']}: n/a")
+
+st.title(f"✨ {T['app_title']}")
 
 if page == T["dashboard"]:
     c1, c2, c3, c4 = st.columns(4)

@@ -1,5 +1,6 @@
 from src.alerts import add_alert_rule, evaluate_alerts
 from src.db import get_connection, get_db_path, get_latest_ingestion_run, init_db, upsert_meta, upsert_values
+from src.db import get_connection, init_db, upsert_meta, upsert_values
 from src.ingest import ingest_country
 from src.scenarios import record_scenario
 

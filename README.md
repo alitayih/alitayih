@@ -33,6 +33,12 @@ In Streamlit Community Cloud app settings, use:
 - **Branch**: `main`
 - **Main file path**: `streamlit_app.py`
 
+1. Push this repo to GitHub.
+2. Open Streamlit Community Cloud -> **New app** -> select repo/branch.
+3. Set **Main file path** to `streamlit_app.py` and deploy.
+
+That is enough for a public URL. No end-user installation required.
+
 ---
 
 ## What the app includes

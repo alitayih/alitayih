@@ -78,6 +78,7 @@ def init_db(conn: sqlite3.Connection) -> None:
             FOREIGN KEY(alert_id) REFERENCES alerts(alert_id)
         );
 
+
         CREATE TABLE IF NOT EXISTS scenarios(
             scenario_id INTEGER PRIMARY KEY AUTOINCREMENT,
             country_iso3 TEXT NOT NULL,
