@@ -76,3 +76,11 @@ def test_ordered_countries_pinned_first():
 
 def test_country_display_name_arabic():
     assert country_display_name("JOR", "AR") == "الأردن (JOR)"
+
+
+def test_country_display_name_arabic_pinned_set():
+    assert country_display_name("JOR", "AR") == "الأردن (JOR)"
+    assert country_display_name("QAT", "AR") == "قطر (QAT)"
+    assert country_display_name("USA", "AR") == "الولايات المتحدة (USA)"
+    assert country_display_name("SAU", "AR") == "السعودية (SAU)"
+    assert country_display_name("EGY", "AR") == "مصر (EGY)"

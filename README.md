@@ -1,10 +1,38 @@
 # Food Security Early Warning - Public Streamlit MVP
 
+## VERSION / CHANGELOG
+
+- **Date:** 2026-02-13
+- **Version:** v0.4.0
+- **Changes in this update:**
+  - Added in-app **Health check** panel (DB path, ingestion mode, latest ingestion timestamp per country).
+  - Added ingestion run tracking in SQLite for observability.
+  - Hardened hosted readiness checks around DB path fallback and ingestion status visibility.
+  - Kept pinned countries and EN/AR labels behavior validated.
+
+## Live Demo
+
+- Public Streamlit URL: **https://alitayih-foodsecurity.streamlit.app/**
+
 Deploy-ready Streamlit app for geopolitics-informed food security monitoring.
 
 ## Deploy in 3 minutes (Streamlit Community Cloud - public URL)
 
 1. Push this repo to GitHub as **food-security-mvp** (public).
+2. Open Streamlit Community Cloud -> **New app** -> select repo/branch.
+3. Set **Main file path** to `streamlit_app.py` and deploy.
+4. Public app URL (expected): **https://alitayih-foodsecurity.streamlit.app/**
+
+That is enough for a public URL. No end-user installation required.
+
+
+## If repo changed, update Streamlit app settings
+
+In Streamlit Community Cloud app settings, use:
+- **Repo**: `alitayih/food-security-mvp`
+- **Branch**: `main`
+- **Main file path**: `streamlit_app.py`
+
 1. Push this repo to GitHub.
 2. Open Streamlit Community Cloud -> **New app** -> select repo/branch.
 3. Set **Main file path** to `streamlit_app.py` and deploy.
@@ -33,6 +61,7 @@ That is enough for a public URL. No end-user installation required.
   - Language toggle **EN/AR** for core labels
   - Dataset provenance panel (indicator source, unit, coverage, source URL)
   - Sidebar cache TTL control (1-168 hours)
+  - Health check panel for runtime diagnostics
 
 ## Reliability and demo mode
 
@@ -89,6 +118,8 @@ Tables:
 - `indicators_values(country_iso3, date, indicator_id, value, unit, source, last_updated)`
 - `alerts(alert_id, country_iso3, indicator_id, direction, threshold, created_at)`
 - `alert_events(event_id, alert_id, triggered_at, observed_value, date)`
+- `scenarios(scenario_id, country_iso3, shock_type, severity, horizon, created_at)`
+- `ingestion_runs(run_id, country_iso3, mode, ingested_at)`
 
 ## Add a new indicator/source
 

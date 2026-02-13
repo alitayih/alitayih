@@ -9,6 +9,7 @@ import plotly.express as px
 import streamlit as st
 
 from src.alerts import add_alert_rule, evaluate_alerts, list_alert_events
+from src.db import get_connection, get_db_path, get_latest_ingestion_run, init_db, query_country_values
 from src.db import get_connection, init_db, query_country_values
 from src.ingest import ingest_country
 from src.scenarios import record_scenario, simulate
@@ -50,6 +51,9 @@ I18N = {
         "triggered": "Triggered alerts",
         "download_csv": "Download CSV",
         "download_json": "Download JSON",
+        "health": "Health check",
+        "db_path": "DB path",
+        "last_ingest": "Last ingestion",
     },
     "AR": {
         "app_title": "نظام إنذار الأمن الغذائي",
@@ -82,6 +86,9 @@ I18N = {
         "triggered": "التنبيهات المفعلة",
         "download_csv": "تنزيل CSV",
         "download_json": "تنزيل JSON",
+        "health": "فحص الصحة",
+        "db_path": "مسار قاعدة البيانات",
+        "last_ingest": "آخر جلب بيانات",
     },
 }
 
@@ -144,6 +151,17 @@ latest_rows = fdf.loc[latest_idx].to_dict("records")
 score_pack = compute_scores(fdf.to_dict("records"), latest_rows)
 alert_count = len(list_alert_events(conn, country))
 summary = deterministic_summary(country, score_pack["overall_risk"], [k for k, _ in score_pack["contributors"]], alert_count)
+last_run = get_latest_ingestion_run(conn, country)
+db_path = get_db_path(conn)
+
+st.title(f"✨ {T['app_title']}")
+with st.expander(T["health"], expanded=True):
+    st.write(f"{T['db_path']}: `{db_path}`")
+    st.write(f"{T['mode']}: `{status}`")
+    if last_run:
+        st.write(f"{T['last_ingest']}: `{last_run['ingested_at']}` ({last_run['mode']})")
+    else:
+        st.write(f"{T['last_ingest']}: n/a")
 
 st.title(f"✨ {T['app_title']}")
 

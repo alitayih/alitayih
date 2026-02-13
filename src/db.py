@@ -31,6 +31,11 @@ def get_connection(db_path: Path | str | None = None) -> sqlite3.Connection:
     return conn
 
 
+def get_db_path(conn: sqlite3.Connection) -> str:
+    row = conn.execute("PRAGMA database_list").fetchone()
+    return row[2] if row and row[2] else ":memory:"
+
+
 def init_db(conn: sqlite3.Connection) -> None:
     conn.executescript(
         """
@@ -82,9 +87,38 @@ def init_db(conn: sqlite3.Connection) -> None:
             horizon INTEGER NOT NULL,
             created_at TEXT NOT NULL
         );
+
+        CREATE TABLE IF NOT EXISTS ingestion_runs(
+            run_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            country_iso3 TEXT NOT NULL,
+            mode TEXT NOT NULL,
+            ingested_at TEXT NOT NULL
+        );
         """
     )
     conn.commit()
+
+
+def record_ingestion_run(conn: sqlite3.Connection, country_iso3: str, mode: str, ingested_at: str) -> None:
+    conn.execute(
+        "INSERT INTO ingestion_runs(country_iso3, mode, ingested_at) VALUES (?,?,?)",
+        (country_iso3, mode, ingested_at),
+    )
+    conn.commit()
+
+
+def get_latest_ingestion_run(conn: sqlite3.Connection, country_iso3: str) -> dict | None:
+    row = conn.execute(
+        """
+        SELECT country_iso3, mode, ingested_at
+        FROM ingestion_runs
+        WHERE country_iso3=?
+        ORDER BY ingested_at DESC
+        LIMIT 1
+        """,
+        (country_iso3,),
+    ).fetchone()
+    return dict(row) if row else None
 
 
 def upsert_meta(conn: sqlite3.Connection, rows: Iterable[dict]) -> None:
